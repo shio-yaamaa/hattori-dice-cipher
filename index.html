@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@yaa_maa_520" />
+    <meta name="twitter:title" content="服部平次絶体絶命の暗号を作成" />
+    <meta name="twitter:description" content="服部平次絶体絶命に登場した暗号を自動で作成します。" />
+    <meta name="twitter:image" content="twitter_card.png" />
+    
+    <title>服部平次絶体絶命の暗号</title>
+    <link href="https://fonts.googleapis.com/css?family=Shadows+Into+Light+Two" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+  </head>
+  
+  <body>
+    <header>
+      <img src="logo.png">
+      <p>服部平次絶体絶命の暗号を作成</p>
+    </header>
+    
+    <article>
+      <p>暗号で表したい内容を入力し、暗号作成ボタンを押してください。
+      表せる内容は数字と模様の2タイプあるので、お好きな方を選んでください。</p>
+      
+      <h1>Type A. 数字から暗号を作成</h1>
+      <p>楠川さん作の暗号のように、暗号の内容は数字となります。通常のサイコロにない7, 8, 9は独自の模様にしますがご了承ください。</p>
+      <input type="number" id="numeral_input" placeholder="数字を入力">
+      <button type="button" id="submit_numeral">この数字で暗号作成</button>
+      
+      <h1>Type B. 模様から暗号を作成</h1>
+      <p>服部やコナン作の暗号のように、暗号の内容は模様や文字となります。</p>
+      <div id="pattern_input_container"></div>
+      <button type="button" id="submit_pattern">この模様で暗号作成</button>
+      
+      <h1>結果</h1>
+      <div id="cipher_paper">
+        <table id="cipher_table"></table>
+      </div>
+      
+      <button type="button" id="share">この暗号を共有</button>
+      <button type="button" id="save">この暗号を保存</button>
+      <button type="button" id="copy">テキストとしてコピー</button>
+    </article>
+    
+    <script src="js/constants.js"></script>
+    <script src="js/utility.js"></script>
+    <script src="js/utility_for_cipher.js"></script>
+    <script src="js/contractions.js"></script>
+    <script src="js/replacements.js"></script>
+    <script src="js/inversions.js"></script>
+    <script src="js/substantiate.js"></script>
+    <script src="js/encrypter.js"></script>
+    
+    <script src="js/ui_input.js"></script>
+    <script src="js/ui_output.js"></script>
+    
+    <script src="js/main.js"></script>
+  </body>
+</html>
