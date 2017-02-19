@@ -1,0 +1,125 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  
+  @media (max-width: $mobile_max_width) {
+    font-size: 14px;
+  }
+}
+
+body {
+  margin: 0;
+}
+
+header {
+  width: 100%;
+  padding: 2rem 4rem 0;
+  
+  @media (max-width: $mobile_max_width) {
+    padding: 1rem 1rem 0;
+  }
+  
+  #header_title {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    font-size: 2rem;
+  }
+  
+  #header_menu {
+    display: flex;
+    width: 100%;
+    font-size: 1.2rem;
+    
+    * {
+      margin: 1em 1em 0;
+      
+      &:after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 0.2em;
+        margin-top: 0.5em;
+        background-color: transparent;
+      }
+      
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    
+    .selected:after {
+      background-color: white;
+    }
+  }
+  color: white;
+  background-color: $header_color;
+  box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.3);
+  
+  * {
+    display: block;
+  }
+}
+
+article {
+  padding: 2rem 4rem;
+  
+  @media (max-width: $mobile_max_width) {
+    padding: 1rem 1rem;
+  }
+}
+
+h1 {
+  width: 100%;
+  margin-top: 2.5rem;
+  border-bottom: solid 2px $underline_color;
+}
+
+button {
+  display: block;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.2rem;
+  box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.3);
+  color: white;
+  background-color: $button_color;
+  transition: background-color 0.1s;
+  
+  &:active {
+    background-color: $button_pressed_color;
+  }
+}
+
+input[type="number"] {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+#error {
+  display: none;
+  padding: 0.5rem;
+  border: solid 2px $error_text;
+  border-radius: 2px;
+  color: $error_text;
+  background-color: $error_background;
+  
+  h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  ul {
+    padding-left: 0;
+    margin-left: 0;
+  }
+  p {
+    margin: 0;
+    font-size: 0.8rem;
+  }
+}

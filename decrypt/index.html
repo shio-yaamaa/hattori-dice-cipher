@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    
+    <title>服部平次絶体絶命の暗号</title>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/decrypt.css" rel="stylesheet">
+  </head>
+  
+  <body>
+    <header>
+      <div id="header_title">
+        <img src="/logo.png">
+        <p>服部平次絶体絶命の暗号</p>
+      </div>
+      <div id="header_menu">
+        <p id="menu_encrypt"><a href="/encrypt/">暗号作成</a></p>
+        <p class="selected" id="menu_decrypt"><a href="/decrypt/">暗号解読</a></p>
+      </div>
+    </header>
+    
+    <article>
+      <textarea id="cipher_input" cols="40" rows="9" wrap="off" placeholder="暗号を入力"></textarea>
+      <button type="button" id="submit_cipher">この暗号を解読</button>
+      
+      <div id="error">
+        <ul id="validate_error_list">
+          <li id="invalid_char">無効な文字が含まれています</li>
+          <li id="invalid_nine_count">「9」の数が正しくありません</li>
+          <li id="cannot_devide_by_nine">文字数が正しくありません</li>
+        </ul>
+      </div>
+      
+      <div id="result">
+        
+        <h1>結果</h1>
+        
+        <h1>以下、服部平次による解説</h1>
+        
+        <p></p>
+      </div>
+    </article>
+    
+    <footer>
+      <p>何かありましたら、<a href="https://twitter.com/yaa_maa_520">@yaa_maa_520</a>にご連絡ください。</p>
+    </footer>
+    
+    <script src="/lib/smooth-scroll.min.js"></script>
+    
+    <script src="/js/constants.js"></script>
+    
+    <script src="/js/utility.js"></script>
+    <script src="/js/utility_for_cipher.js"></script>
+    <script src="/js/utility_for_ui.js"></script>
+    
+    <script src="/js/decrypt/decrypt.js"></script>
+    
+    <script src="/js/decrypt/ui_input.js"></script>
+    
+    <script src="/js/decrypt/main.js"></script>
+  </body>
+</html>

@@ -52,3 +52,10 @@ function numbers2booleans(numbers) {
     return number == 1;
   });
 }
+
+// width and height
+function calculateCipherSize(cipherLength) {
+  var longer = Math.ceil(Math.sqrt(cipherLength));
+  var shorter = Math.ceil(cipherLength / longer);
+  return [longer, shorter];
+}

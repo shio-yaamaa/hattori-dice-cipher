@@ -1,6 +1,0 @@
-https://eyalsch.wordpress.com/2010/04/01/random-sample/
-nCmのやり方集。
-
-Twitter Cardでimageが表示されない問題。
-もしかしたら、cloud9のrobots的にダメなのかも。
-https://twittercommunity.com/t/images-not-showing-up-on-summary-cards/15965/20

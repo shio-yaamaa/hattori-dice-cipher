@@ -1,15 +1,31 @@
 /* global FRAME_COUNT_MIN */
 /* global FRAME_COUNT_MAX */
+/* global NUMERAL2BOOLEANS */
+/* global errors */
 
 /* global encrypt */
-/* global showCipher */
+/* global showResult */
 
+// submit numeral action
+document.getElementById('submit_numeral').addEventListener('click', function () {
+  var numerals = document.getElementById('numeral_input').value.split('').map(function (element) {
+    return parseInt(element);
+  });
+  var booleans = numerals.reduce(function (previousValue, currentValue) {
+    return previousValue.concat(NUMERAL2BOOLEANS[currentValue]);
+  }, []);
+  console.log(booleans);
+  var trumps = encrypt(booleans);
+  showResult(trumps, errors);
+});
+
+// submit pattern action
 document.getElementById('submit_pattern').addEventListener('click', function () {
   var booleans = getBooleansFromPattern(
     document.getElementById('pattern_input_container')
   );
   var trumps = encrypt(booleans);
-  showCipher(trumps, [7, 7]);
+  showResult(trumps, errors);
 });
 
 function createPatternInputFrame(patternInputContainer) {

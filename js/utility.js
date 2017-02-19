@@ -1,3 +1,11 @@
+function getDevice() {
+  var ua = window.navigator.userAgent;
+  if (ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0 || (ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0)) {
+    return 'mobile';
+  }
+  return 'other';
+}
+
 // count the number of certain elements in array
 function count(array, element) {
   return array.reduce(function (previousValue, currentValue) {
@@ -13,6 +21,19 @@ function multipleIndexOf(array, element) {
     }
     return previousValue;
   }, []);
+}
+
+function createFilledArray(count, element) {
+  var array = [];
+  for (var i = 0; i < count; i++) {
+    array.push(element);
+  }
+  return array;
+}
+
+// flatten an array by one level
+function flattenArray(array) {
+  return Array.prototype.concat.apply([], array);
 }
 
 // get key which corresponds to the given value
@@ -52,4 +73,22 @@ function pickRandomInts(min, max, count) {
     array.splice(getRandomInt(0, array.length + 1), 0, i);
   }
   return array.slice(0, count);
+}
+
+function getMargin(element) {
+  var computedStyle = getComputedStyle(element);
+  return [
+    parseFloat(computedStyle.marginTop),
+    parseFloat(computedStyle.marginRight),
+    parseFloat(computedStyle.marginBottom),
+    parseFloat(computedStyle.marginLeft)
+  ];
+}
+
+function getElementSizeExcludingPadding(element) {
+  var computedStyle = getComputedStyle(element);
+  return [
+    element.clientWidth - (parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight)),
+    element.clientHeight - (parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom))
+  ];
 }

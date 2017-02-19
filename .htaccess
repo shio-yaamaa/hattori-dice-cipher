@@ -1,0 +1,7 @@
+Options -Indexes
+
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !/encrypt
+RewriteRule ^(/)?$ /encrypt [R,L]
+
+# https://murashun.jp/blog/20141229-01.html#chapter-152
