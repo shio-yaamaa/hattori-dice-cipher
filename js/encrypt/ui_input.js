@@ -3,13 +3,15 @@
 /* global NUMERAL2BOOLEANS */
 /* global errors */
 
+/* global createPatternFrame */
+
 /* global encrypt */
 /* global showResult */
 
 // submit numeral action
 document.getElementById('submit_numeral').addEventListener('click', function () {
   var numerals = document.getElementById('numeral_input').value.split('').map(function (element) {
-    return parseInt(element);
+    return parseInt(element, 10);
   });
   var booleans = numerals.reduce(function (previousValue, currentValue) {
     return previousValue.concat(NUMERAL2BOOLEANS[currentValue]);
@@ -28,23 +30,10 @@ document.getElementById('submit_pattern').addEventListener('click', function () 
   showResult(trumps, errors);
 });
 
-function createPatternInputFrame(patternInputContainer) {
-  var table = document.createElement('table');
-  var tr;
-  for (var i = 0; i < Math.pow(3, 2); i++) {
-    if (i % 3 == 0) {
-      tr = document.createElement('tr');
-      table.appendChild(tr);
-    }
-    var td = document.createElement('td');
-    td.appendChild(document.createElement('div'));
-    td.addEventListener('click', function () {
-      this.classList.toggle('one');
-    });
-    tr.appendChild(td);
-  }
-  return table;
-}
+// for callback of createPatternFrame
+var patternTdOnClick = function (clickedElement) {
+  clickedElement.classList.toggle('one');
+};
 
 function createFrameControl() {
   var controls = [
@@ -56,7 +45,7 @@ function createFrameControl() {
         }
         var container = document.getElementById('pattern_input_container');
         container.insertBefore(
-          createPatternInputFrame(container),
+          createPatternFrame(null, patternTdOnClick),
           container.children[container.children.length - 1]
         );
         if (container.children.length - 1 >= FRAME_COUNT_MAX) {
@@ -112,7 +101,7 @@ function createFrameControl() {
 function showPatternInput(initialFrameCount) {
   var container = document.getElementById('pattern_input_container');
   for (var i = 0; i < initialFrameCount; i++) {
-    container.appendChild(createPatternInputFrame(container));
+    container.appendChild(createPatternFrame(null, patternTdOnClick));
   }
   container.appendChild(createFrameControl());
 }

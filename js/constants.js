@@ -24,4 +24,11 @@ var TRUMP = {
   N: 'N'
 };
 
+var TRUMP2NUMERAL = {
+  A: [1],
+  J: [1, 1],
+  Q: [1, 2],
+  K: [1, 3]
+};
+
 var EXPANDABLE_TRUMP = /(J|Q|K)/;

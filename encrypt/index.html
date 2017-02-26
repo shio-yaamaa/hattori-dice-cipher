@@ -19,7 +19,7 @@
     <header>
       <div id="header_title">
         <img src="/logo.png">
-        <p>服部平次絶体絶命の暗号</p>
+        <p>絶体絶命の暗号</p>
       </div>
       <div id="header_menu">
         <p class="selected" id="menu_encrypt"><a href="/encrypt/">暗号作成</a></p>
@@ -38,7 +38,7 @@
       
       <h1>Type B. 模様から暗号を作成</h1>
       <p>服部やコナン作の暗号のように、暗号の内容は模様や文字となります。</p>
-      <div id="pattern_input_container"></div>
+      <div class="pattern_container editable" id="pattern_input_container"></div>
       <button type="button" id="submit_pattern">この模様で暗号作成</button>
       
       <div id="result">
@@ -51,9 +51,9 @@
         <div id="error">
           <h2>この暗号には問題があります</h2>
           <ul id="error_list">
-            <li id="not_square">● 正方形にできませんでした</li>
-            <li id="nine_not_center">● 一辺が偶数なので、9を中央に配置できませんでした</li>
-            <li id="JQK_deficient">● J, Q, Kを十分な数作ることができませんでした</li>
+            <li id="not_square">正方形にできませんでした</li>
+            <li id="nine_not_center">一辺が偶数なので、9を中央に配置できませんでした</li>
+            <li id="JQK_deficient">J, Q, Kを十分な数作ることができませんでした</li>
           </ul>
           <p>このような問題は、3×3に並べたときに1の目となるマスが少なすぎることで起こります。
           Type Aなら一桁ごとになるべく大きい数字を入力する、Type Bなら丸をつける場所を増やすことで改善されることがあります。</p>

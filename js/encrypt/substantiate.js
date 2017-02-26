@@ -24,13 +24,7 @@ function substantiateN(trumps) {
   var six2twoPositions = pickRandomElements(NPositions, NPositions.length);
   for (var i = 0; i < trumps.length; i++) {
     if (trumps[i] == TRUMP.N) {
-      trumps[i] = six2twoPositions.indexOf(i) % (6 - 2 + 1) * -1 + 6
-      /*
-      if (six2twoPositions.indexOf(i) != -1) {
-        trumps[i] = six2twoPositions.indexOf(i) * -1 + 6;
-      } else {
-        trumps[i] = getRandomInt(0, 6) + 1;
-      }*/
+      trumps[i] = String(six2twoPositions.indexOf(i) % (6 - 2 + 1) * -1 + 6);
     }
   }
   return trumps;

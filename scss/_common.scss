@@ -117,9 +117,55 @@ input[type="number"] {
   ul {
     padding-left: 0;
     margin-left: 0;
+    li:before {
+      content: "● ";
+    }
   }
   p {
     margin: 0;
     font-size: 0.8rem;
+  }
+}
+
+.pattern_container {
+  display: flex;
+  flex-wrap: wrap;
+
+  table {
+    margin: 1rem 1rem 1rem 0;
+    border-spacing: 0.2rem;
+    
+    td {
+      width: 2rem;
+      height: 2rem;
+      
+      &[colspan="3"] {
+        width: 2 * 3 + 0.2 * 2rem;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 0.8rem;
+      }
+      
+      border-radius: 0.2rem;
+      background-color: $dice_background_color;
+      &.one {
+        background-color: $dice_one_color;
+      }
+      &.disabled {
+        color: $disabled_text_color;
+      }
+      transition: background-color 0.1s;
+    }
+  }
+  
+  &.editable {
+    td:not(.disabled) {
+      &:hover {
+        cursor: pointer;
+      }
+      &:not(.one):hover {
+        background-color: $hover_color;
+      }
+    }
   }
 }

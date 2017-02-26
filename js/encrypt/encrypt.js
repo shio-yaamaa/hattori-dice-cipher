@@ -86,13 +86,24 @@ function encrypt(booleans) {
   trumps = substantiateR(trumps);
   trumps = substantiateN(trumps);
   
-  // insert 9
   var size = calculateCipherSize(trumps.length + 1);
+  
+  // insert 9
   var ninePos = [Math.floor((size[0] - 1) / 2), Math.floor((size[1] - 1) / 2)];
   trumps.splice(size[0] * ninePos[1] + ninePos[0], 0, 9);
   if (size[0] % 2 == 0 || size[1] % 2 == 0) {
     errors['nine_not_center'] = true;
   }
   
-  return trumps;
+  // to two-dimensional
+  var twoDTrumps = [];
+  trumps.forEach(function (element, index) {
+    if (index % size[0] == 0) {
+      twoDTrumps.push([]);
+    }
+    twoDTrumps[twoDTrumps.length - 1].push(element);
+  });
+  console.log(twoDTrumps);
+  
+  return twoDTrumps;
 }

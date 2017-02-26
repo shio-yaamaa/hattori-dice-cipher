@@ -1,4 +1,5 @@
 /* global TRUMP */
+/* global count */
 
 ////////////////////////////////////////////////
 // toward encryption
@@ -15,9 +16,8 @@ function booleans2trumps(booleans) {
 ////////////////////////////////////////////////
 
 // "2KQ46J" -> [2, 'K', 'Q', 4, 6, 'J']
-// remove '9'
 function string2trumps(string) {
-  return string.replace('9', '').split('').map(function (char) {
+  return string.split('').map(function (char) {
     return parseInt(char) > 0 ? parseInt(char) : char;
   });
 }
@@ -40,10 +40,20 @@ function trumps2numbers(trumps) {
         numbers.push(1, 3);
         break;
       default:
-        numbers.push(element);
+        numbers.push(parseInt(element, 10));
     }
   });
   return numbers;
+}
+
+// remove 9 or '9' from array
+function removeNine(array) {
+  var nineIndex = array.indexOf(9);
+  if (nineIndex == -1) {
+    nineIndex = array.indexOf('9');
+  }
+  array.splice(nineIndex, 1);
+  return array;
 }
 
 // [2, 1, 3, 1, 2, 4, 6, 1, 1] -> [false, true, false, true, false, false, false, true, true]
@@ -51,6 +61,14 @@ function numbers2booleans(numbers) {
   return numbers.map(function (number) {
     return number == 1;
   });
+}
+
+function booleans2numeral(booleans) {
+  var numeral = [];
+  for (var i = 0; i < booleans.length; i += 9) {
+    numeral.push(count(booleans.slice(i, i + 9), true));
+  }
+  return numeral;
 }
 
 // width and height

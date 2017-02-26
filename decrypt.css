@@ -1,3 +1,4 @@
+@charset "UTF-8";
 * {
   box-sizing: border-box; }
 
@@ -75,4 +76,57 @@ input[type="number"] {
   padding: 0.5rem;
   font-size: 1rem; }
 
-/*# sourceMappingURL=decrypt.css.map */
+#error {
+  display: none;
+  padding: 0.5rem;
+  border: solid 2px #b71c1c;
+  border-radius: 2px;
+  color: #b71c1c;
+  background-color: #ffebee; }
+  #error h2 {
+    margin: 0;
+    font-size: 1.2rem; }
+  #error ul {
+    padding-left: 0;
+    margin-left: 0; }
+    #error ul li:before {
+      content: "● "; }
+  #error p {
+    margin: 0;
+    font-size: 0.8rem; }
+
+.pattern_container {
+  display: flex;
+  flex-wrap: wrap; }
+  .pattern_container table {
+    margin: 1rem 1rem 1rem 0;
+    border-spacing: 0.2rem; }
+    .pattern_container table td {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.2rem;
+      background-color: #f5f5f5;
+      transition: background-color 0.1s; }
+      .pattern_container table td[colspan="3"] {
+        width: 6.4rem;
+        text-align: center;
+        vertical-align: middle;
+        font-size: 0.8rem; }
+      .pattern_container table td.one {
+        background-color: #ef5350; }
+      .pattern_container table td.disabled {
+        color: #bdbdbd; }
+  .pattern_container.editable td:not(.disabled):hover {
+    cursor: pointer; }
+  .pattern_container.editable td:not(.disabled):not(.one):hover {
+    background-color: #eeeeee; }
+
+#result {
+  display: none; }
+
+#numeral_answer {
+  font-size: 2rem;
+  word-break: break-all; }
+
+canvas {
+  box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.3); }
