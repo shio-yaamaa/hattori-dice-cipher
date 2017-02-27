@@ -140,8 +140,10 @@ function explainByCanvas(cipher) {
   for (var i = 0; i < flattenExpandedCipher.length; i += 9) {
     cipherDevidedByNine.push(flattenExpandedCipher.slice(i, i + 9));
   }
-  showDevideByNineCanvas(cipherDevidedByNine, canvasSize);
+  
+  var secondRowTop = showDevideByNineCanvas(cipherDevidedByNine, canvasSize);
   showDiceCanvas(canvasSize);
+  showEmbeddingCanvas(canvasSize, cipherDevidedByNine[0], secondRowTop);
 }
 
 function calculateCanvasSize(canvas) {
@@ -192,6 +194,47 @@ function backgroundGradient(canvasContext, canvasSize, gradientType) {
   }
   canvasContext.fillStyle = gradient;
   canvasContext.fillRect(0, 0, canvasSize[0], canvasSize[1]);
+}
+
+function drawFrame(canvasContext, frameCenter, frameSize, thickerLineWidth, thinnerLineWidth, shadowOffset) {
+  var frameXs = [
+    frameCenter[0] - frameSize * 1.5,
+    frameCenter[0] - frameSize * 0.5,
+    frameCenter[0] + frameSize * 0.5,
+    frameCenter[0] + frameSize * 1.5
+  ];
+  var frameYs = [
+    frameCenter[1] - frameSize * 1.5,
+    frameCenter[1] - frameSize * 0.5,
+    frameCenter[1] + frameSize * 0.5,
+    frameCenter[1] + frameSize * 1.5
+  ];
+  
+  var strokeStyles = ['rgba(0, 0, 0, 0.5)', 'white'];
+  
+  // frameType == 0: shadow, frameType == 1: frame
+  for (var frameType = 0; frameType < 2; frameType++) {
+    var offset = frameType == 0 ? shadowOffset : 0;
+    canvasContext.strokeStyle = strokeStyles[frameType];
+    canvasContext.lineWidth = thickerLineWidth;
+    canvasContext.strokeRect(
+      frameXs[0] + offset, frameYs[0] + offset,
+      frameSize * 3 + offset, frameSize * 3 + offset
+    );
+    canvasContext.lineWidth = thinnerLineWidth;
+    canvasContext.beginPath();
+    // horizontal lines
+    for (var i = 0; i < 2; i++) {
+      canvasContext.moveTo(frameXs[0] + offset, frameYs[1 + i] + offset);
+      canvasContext.lineTo(frameXs[3] + offset, frameYs[1 + i] + offset);
+    }
+    // vertical lines
+    for (var i = 0; i < 2; i++) {
+      canvasContext.moveTo(frameXs[1 + i] + offset, frameYs[0] + offset);
+      canvasContext.lineTo(frameXs[1 + i] + offset, frameYs[3] + offset);
+    }
+    canvasContext.stroke();
+  }
 }
 
 function showHighlightAlphabetCanvas(cipher, canvasSize) {
@@ -284,7 +327,7 @@ function showSpotlightNineCanvas(alignedCipher, canvasSize, charSize, ninePos) {
     var circlePos = [ninePos[0] + charSize / 2, ninePos[1] + charSize / 2];
     var circleRadius = charSize / 2; 
     
-    // draw shadow
+    // draw dark place
     canvasContext.fillStyle = 'rgba(0, 0, 0, 0.5)';
     canvasContext.beginPath();
     canvasContext.rect(0, 0, canvasSize[0], canvasSize[1]);
@@ -297,6 +340,8 @@ function showDevideByNineCanvas(cipherDevidedByNine, canvasSize) {
   var canvas = document.getElementById('devide_by_nine');
   var canvasContext = canvas.getContext('2d');
   setCanvasSize(canvas, canvasContext, canvasSize);
+  
+  var secondRowTop;
   
   // background
   backgroundGradient(canvasContext, canvasSize, BLUE_TO_GREEN_GRADIENT);
@@ -313,6 +358,9 @@ function showDevideByNineCanvas(cipherDevidedByNine, canvasSize) {
   // draw characters
   cipherDevidedByNine.forEach(function (row, rowIndex) {
     var y = verticalMargin + charSize * rowIndex;
+    if (rowIndex == 1) {
+      secondRowTop = y;
+    }
     row.forEach(function (element, elementIndex) {
       var x = horizontalMargin + charSize * elementIndex;
       var image = charImages['char' + element]['normal'];
@@ -321,7 +369,9 @@ function showDevideByNineCanvas(cipherDevidedByNine, canvasSize) {
       });
     });
   });
-}// enqueueFunctionWaitingImageLoadを使う
+  
+  return secondRowTop;
+}
 
 function showDiceCanvas(canvasSize) {
   var canvas = document.getElementById('dice');
@@ -356,17 +406,37 @@ function showDiceCanvas(canvasSize) {
   canvasContext.fill();
 }
 
-function showEmbeddingCanvas(canvasSize, secondRowTop) {
+function showEmbeddingCanvas(canvasSize, embeddingNumbers, secondRowTop) {
   var canvas = document.getElementById('embedding');
   var canvasContext = canvas.getContext('2d');
+  var canvasToCopyFrom = document.getElementById('devide_by_nine');
   setCanvasSize(canvas, canvasContext, canvasSize);
   
   // background
   backgroundGradient(canvasContext, canvasSize, BLUE_TO_GREEN_GRADIENT);
   
-  // second row and below
-  
-}
+  enqueueFunctionWaitingImageLoad(function () {
+    // second row and below
+    if (secondRowTop) {
+      canvasContext.drawImage(
+        canvasToCopyFrom,
+        0, secondRowTop, canvasSize[0], canvasSize[1] - secondRowTop,
+        0 / devicePxRatio, secondRowTop / devicePxRatio, canvasSize[0] / devicePxRatio, (canvasSize[1] - secondRowTop) / devicePxRatio
+      );
+    }// スマホだとうまくいかない
+    
+    // frame
+    drawFrame(canvasContext, [canvasSize[0] / 2, canvasSize[1] / 2], canvasSize[0] * 0.134, 10, 8, 5);
+    
+    // embedding numbers
+    for (var row = 0; row < 3; row++) {
+      var numbers = embeddingNumbers.slice(row * 3, row * 3 + 3);
+      for (var column = 0; column < 3; column++) {
+        
+      }
+    }
+  });
+}// enqueueFunctionWaitingImageLoadを使う
 
 function explainByText(booleansCount) {
   var excludeNineCount = booleansCount;
