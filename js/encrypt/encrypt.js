@@ -37,15 +37,18 @@ function encrypt(booleans) {
   var AA_J_max = AA_J_cont.count(trumps);
   var AN_R_max = AN_R_cont.count(trumps);
   var AA_J_quota, AN_R_quota;
-  var contSum;
+  var contSum = undefined;
   
   // decide how many times to execute contraction
   var squares = [];
   for (var i = 1; i <= Math.floor(Math.sqrt(trumps.length + 1)); i++) {
     squares.push(Math.pow(i, 2));
   }
+  var candidateRoot = undefined;
   squares.forEach(function (element, index) {
-    if (trumps.length - (AA_J_max + AN_R_max) + 1 <= element && (contSum == undefined || index % 2 == 0)) {
+    if (trumps.length - (AA_J_max + AN_R_max) + 1 <= element
+      && (contSum == undefined || (index % 2 == 0 && candidateRoot % 2 == 0))) {
+      candidateRoot = index + 1;
       contSum = trumps.length + 1 - element;
     }
   });

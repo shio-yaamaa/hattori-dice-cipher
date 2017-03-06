@@ -56,12 +56,32 @@ header {
       background-color: white;
     }
   }
-  color: white;
+  
+  a {
+    color: $header_menu_text_color;
+    text-decoration: none;
+  }
+  
+  color: $header_text_color;
   background-color: $header_color;
   box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.3);
   
   * {
     display: block;
+  }
+}
+
+footer {
+  width: 100%;
+  padding: 1rem 4rem 0;
+  border-top: solid 2px $divider_color;
+  
+  @media (max-width: $mobile_max_width) {
+    padding: 1rem 1rem 0;
+  }
+  
+  a {
+    text-decoration: none;
   }
 }
 
@@ -76,7 +96,7 @@ article {
 h1 {
   width: 100%;
   margin-top: 2.5rem;
-  border-bottom: solid 2px $underline_color;
+  border-bottom: solid 2px $divider_color;
 }
 
 button {

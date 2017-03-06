@@ -16,7 +16,7 @@ header {
   width: 100%;
   padding: 2rem 4rem 0;
   color: white;
-  background-color: #33691e;
+  background-color: #607d8b;
   box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.3); }
   @media (max-width: 768px) {
     header {
@@ -43,8 +43,21 @@ header {
         cursor: pointer; }
     header #header_menu .selected:after {
       background-color: white; }
+  header a {
+    color: white;
+    text-decoration: none; }
   header * {
     display: block; }
+
+footer {
+  width: 100%;
+  padding: 1rem 4rem 0;
+  border-top: solid 2px #e0e0e0; }
+  @media (max-width: 768px) {
+    footer {
+      padding: 1rem 1rem 0; } }
+  footer a {
+    text-decoration: none; }
 
 article {
   padding: 2rem 4rem; }

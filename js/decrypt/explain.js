@@ -9,6 +9,9 @@
 /* global getMargin */
 /* global getElementSizeExcludingPadding */
 
+/* global numbers2booleans */
+/* global booleans2dice */
+
 var devicePxRatio = window.devicePixelRatio;
 var idealCharSize = getDevice() == 'mobile' ? 30 : 50;
 
@@ -59,19 +62,23 @@ var onloadEvent = function () {
 
 // create image objects
 var charImages = {
-  char1: {normal: new Image(), yellow: new Image()},
-  char2: {normal: new Image(), yellow: new Image()},
-  char3: {normal: new Image(), yellow: new Image()},
-  char4: {normal: new Image(), yellow: new Image()},
-  char5: {normal: new Image(), yellow: new Image()},
-  char6: {normal: new Image(), yellow: new Image()},
-  char9: {normal: new Image()},
+  char0: {  dice: new Image()},
+  char1: {normal: new Image(), yellow: new Image(), dice: new Image()},
+  char2: {normal: new Image(), yellow: new Image(), dice: new Image()},
+  char3: {normal: new Image(), yellow: new Image(), dice: new Image()},
+  char4: {normal: new Image(), yellow: new Image(), dice: new Image()},
+  char5: {normal: new Image(), yellow: new Image(), dice: new Image()},
+  char6: {normal: new Image(), yellow: new Image(), dice: new Image()},
+  char7: {  dice: new Image()},
+  char8: {  dice: new Image()},
+  char9: {normal: new Image(),   dice: new Image()},
   charA: { light: new Image()},
   charJ: { light: new Image()},
   charQ: { light: new Image()},
   charK: { light: new Image()}
 };
 var diceImage = new Image();
+var invalidDiceImage = new Image();
 
 // set allImagesCount
 allImagesCount +=
@@ -80,7 +87,7 @@ allImagesCount +=
       return previousTypeValue + 1;
     }, 0);
   }, 0)
-  + 1; // diceImageの分
+  + 1 + 1; // diceImage, invalidDiceImageの分
 
 // set onload event and source
 for (var charImage in charImages) {
@@ -90,13 +97,16 @@ for (var charImage in charImages) {
     console.log("ソースは" + charImages[charImage][charImageType].src + "です");
   }
 }
-var diceImage = new Image();
 diceImage.onload = onloadEvent;
 diceImage.src = '/image/dice.png';
+invalidDiceImage.onload = onloadEvent;
+invalidDiceImage.src = '/image/invalid_dice.png';
 
 function explainByCanvas(cipher) {
   var canvasSize = calculateCanvasSize(document.getElementById('highlight_alphabet'));
-  showHighlightAlphabetCanvas(cipher, canvasSize);
+  enqueueFunctionWaitingImageLoad(function () {
+    showHighlightAlphabetCanvas(cipher, canvasSize);
+  });
   
   var nineRowIndex = cipher.reduce(function (previous, current, index) {
     return current.indexOf('9') == -1 ? previous : index;
@@ -127,8 +137,10 @@ function explainByCanvas(cipher) {
     return createFilledArray(maxCenterIndex - centerIndex[index], '').concat(element);
   });
   
-  var dataForSpotlightNine = showExpandCanvas(alignedCipher, canvasSize);
-  showSpotlightNineCanvas(alignedCipher, canvasSize, dataForSpotlightNine['charSize'], dataForSpotlightNine['ninePos']);
+  enqueueFunctionWaitingImageLoad(function () {
+    var dataForSpotlightNine = showExpandCanvas(alignedCipher, canvasSize);
+    showSpotlightNineCanvas(alignedCipher, canvasSize, dataForSpotlightNine['charSize'], dataForSpotlightNine['ninePos']);
+  });
   
   // remove 9 and devide by 9
   var cipherDevidedByNine = [];
@@ -141,9 +153,21 @@ function explainByCanvas(cipher) {
     cipherDevidedByNine.push(flattenExpandedCipher.slice(i, i + 9));
   }
   
-  var secondRowTop = showDevideByNineCanvas(cipherDevidedByNine, canvasSize);
-  showDiceCanvas(canvasSize);
-  showEmbeddingCanvas(canvasSize, cipherDevidedByNine[0], secondRowTop);
+  // identify dice numbers
+  var diceNumbers = [];
+  cipherDevidedByNine.forEach(function (element, index) {
+    diceNumbers.push(booleans2dice(numbers2booleans(element)));
+  });
+  
+  enqueueFunctionWaitingImageLoad(function () {
+    var secondRowTop = showDevideByNineCanvas(cipherDevidedByNine, canvasSize);
+    showDiceCanvas(canvasSize);
+    showEmbeddingCanvas(canvasSize, cipherDevidedByNine[0], secondRowTop);
+    var dataForSmallDices = showEmbeddedCanvas(canvasSize, cipherDevidedByNine);
+    showSmallDicesCanvas(canvasSize, cipherDevidedByNine, dataForSmallDices['squareSize'], dataForSmallDices['leftTops']);
+    showPatternAnswerCanvas(canvasSize, cipherDevidedByNine, dataForSmallDices['squareSize'], dataForSmallDices['leftTops']);
+    showNumeralAnswerCanvas(canvasSize, diceNumbers, dataForSmallDices['squareSize'], dataForSmallDices['leftTops']);
+  });
 }
 
 function calculateCanvasSize(canvas) {
@@ -196,18 +220,23 @@ function backgroundGradient(canvasContext, canvasSize, gradientType) {
   canvasContext.fillRect(0, 0, canvasSize[0], canvasSize[1]);
 }
 
-function drawFrame(canvasContext, frameCenter, frameSize, thickerLineWidth, thinnerLineWidth, shadowOffset) {
+// frame: 3×3のまとまり, square: frameを構成する四角
+function drawFrame(canvasContext, frameCenter, squareSize) {
+  var thickerLineWidth = Math.max(squareSize * 0.087, 1);
+  var thinnerLineWidth = Math.max(squareSize * 0.076, 1);
+  var shadowOffset = squareSize * 0.0435;
+  
   var frameXs = [
-    frameCenter[0] - frameSize * 1.5,
-    frameCenter[0] - frameSize * 0.5,
-    frameCenter[0] + frameSize * 0.5,
-    frameCenter[0] + frameSize * 1.5
+    frameCenter[0] - squareSize * 1.5,
+    frameCenter[0] - squareSize * 0.5,
+    frameCenter[0] + squareSize * 0.5,
+    frameCenter[0] + squareSize * 1.5
   ];
   var frameYs = [
-    frameCenter[1] - frameSize * 1.5,
-    frameCenter[1] - frameSize * 0.5,
-    frameCenter[1] + frameSize * 0.5,
-    frameCenter[1] + frameSize * 1.5
+    frameCenter[1] - squareSize * 1.5,
+    frameCenter[1] - squareSize * 0.5,
+    frameCenter[1] + squareSize * 0.5,
+    frameCenter[1] + squareSize * 1.5
   ];
   
   var strokeStyles = ['rgba(0, 0, 0, 0.5)', 'white'];
@@ -219,7 +248,7 @@ function drawFrame(canvasContext, frameCenter, frameSize, thickerLineWidth, thin
     canvasContext.lineWidth = thickerLineWidth;
     canvasContext.strokeRect(
       frameXs[0] + offset, frameYs[0] + offset,
-      frameSize * 3 + offset, frameSize * 3 + offset
+      squareSize * 3, squareSize * 3
     );
     canvasContext.lineWidth = thinnerLineWidth;
     canvasContext.beginPath();
@@ -235,6 +264,9 @@ function drawFrame(canvasContext, frameCenter, frameSize, thickerLineWidth, thin
     }
     canvasContext.stroke();
   }
+  
+  // return left top position for embedding
+  return [frameXs[0], frameYs[0]];
 }
 
 function showHighlightAlphabetCanvas(cipher, canvasSize) {
@@ -260,9 +292,7 @@ function showHighlightAlphabetCanvas(cipher, canvasSize) {
     row.forEach(function (element, elementIndex) {
       var x = horizontalMargin + charSize * elementIndex;
       var image = charImages['char' + element][parseInt(element, 10) > 0 ? 'normal' : 'light'];
-      enqueueFunctionWaitingImageLoad(function () {
-        canvasContext.drawImage(image, x, y, charSize, charSize);
-      });
+      canvasContext.drawImage(image, x, y, charSize, charSize);
     });
   });
 }
@@ -296,9 +326,7 @@ function showExpandCanvas(alignedCipher, canvasSize) {
       if (element != '') {
         var x = horizontalMargin + charSize * elementIndex;
         var image = charImages['char' + element]['normal'];
-        enqueueFunctionWaitingImageLoad(function () {
-          canvasContext.drawImage(image, x, y, charSize, charSize);
-        });
+        canvasContext.drawImage(image, x, y, charSize, charSize);
         if (parseInt(element, 10) == 9) {
           ninePos = [x, y];
         }
@@ -320,20 +348,19 @@ function showSpotlightNineCanvas(alignedCipher, canvasSize, charSize, ninePos) {
   
   console.log(ninePos);
   console.log(charSize);
-  enqueueFunctionWaitingImageLoad(function () {
-    // copy from the previous canvas
-    canvasContext.drawImage(canvasToCopyFrom, 0, 0, canvasSize[0], canvasSize[1]);
-    
-    var circlePos = [ninePos[0] + charSize / 2, ninePos[1] + charSize / 2];
-    var circleRadius = charSize / 2; 
-    
-    // draw dark place
-    canvasContext.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    canvasContext.beginPath();
-    canvasContext.rect(0, 0, canvasSize[0], canvasSize[1]);
-    canvasContext.arc(circlePos[0], circlePos[1], circleRadius, 0, 2 * Math.PI, true);
-    canvasContext.fill();
-  });
+  
+  // copy from the previous canvas
+  canvasContext.drawImage(canvasToCopyFrom, 0, 0, canvasSize[0], canvasSize[1]);
+  
+  var circlePos = [ninePos[0] + charSize / 2, ninePos[1] + charSize / 2];
+  var circleRadius = charSize / 2; 
+  
+  // draw dark place
+  canvasContext.fillStyle = 'rgba(0, 0, 0, 0.5)';
+  canvasContext.beginPath();
+  canvasContext.rect(0, 0, canvasSize[0], canvasSize[1]);
+  canvasContext.arc(circlePos[0], circlePos[1], circleRadius, 0, 2 * Math.PI, true);
+  canvasContext.fill();
 }
 
 function showDevideByNineCanvas(cipherDevidedByNine, canvasSize) {
@@ -364,9 +391,7 @@ function showDevideByNineCanvas(cipherDevidedByNine, canvasSize) {
     row.forEach(function (element, elementIndex) {
       var x = horizontalMargin + charSize * elementIndex;
       var image = charImages['char' + element]['normal'];
-      enqueueFunctionWaitingImageLoad(function () {
-        canvasContext.drawImage(image, x, y, charSize, charSize);
-      });
+      canvasContext.drawImage(image, x, y, charSize, charSize);
     });
   });
   
@@ -385,15 +410,13 @@ function showDiceCanvas(canvasSize) {
   var diceSize = [undefined, undefined];
   diceSize[1] = canvasSize[1] * 0.7;
   diceSize[0] = diceSize[1] / diceImage.height * diceImage.width;
-  enqueueFunctionWaitingImageLoad(function () {
-    canvasContext.drawImage(
-      diceImage,
-      (canvasSize[0] - diceSize[0]) / 2,
-      (canvasSize[1] - diceSize[1]) / 2,
-      diceSize[0],
-      diceSize[1]
-    );
-  });
+  canvasContext.drawImage(
+    diceImage,
+    (canvasSize[0] - diceSize[0]) / 2,
+    (canvasSize[1] - diceSize[1]) / 2,
+    diceSize[0],
+    diceSize[1]
+  );
   
   // draw Hattori's horn
   var hornTop = canvasSize[1] * 0.214;
@@ -415,28 +438,206 @@ function showEmbeddingCanvas(canvasSize, embeddingNumbers, secondRowTop) {
   // background
   backgroundGradient(canvasContext, canvasSize, BLUE_TO_GREEN_GRADIENT);
   
-  enqueueFunctionWaitingImageLoad(function () {
-    // second row and below
-    if (secondRowTop) {
-      canvasContext.drawImage(
-        canvasToCopyFrom,
-        0, secondRowTop, canvasSize[0], canvasSize[1] - secondRowTop,
-        0 / devicePxRatio, secondRowTop / devicePxRatio, canvasSize[0] / devicePxRatio, (canvasSize[1] - secondRowTop) / devicePxRatio
-      );
-    }// スマホだとうまくいかない
-    
-    // frame
-    drawFrame(canvasContext, [canvasSize[0] / 2, canvasSize[1] / 2], canvasSize[0] * 0.134, 10, 8, 5);
-    
-    // embedding numbers
-    for (var row = 0; row < 3; row++) {
-      var numbers = embeddingNumbers.slice(row * 3, row * 3 + 3);
-      for (var column = 0; column < 3; column++) {
-        
+  console.log("devicePxRatio: " + devicePxRatio);
+  console.log("canvasSize: " + canvasSize[0] + " x " + canvasSize[1]);
+  console.log("secondRowTop: " + secondRowTop);
+  
+  // second row and below
+  if (secondRowTop) {
+    canvasContext.drawImage(
+      canvasToCopyFrom,
+      0, secondRowTop * devicePxRatio, canvasSize[0] * devicePxRatio, (canvasSize[1] - secondRowTop) * devicePxRatio,
+      0, secondRowTop, canvasSize[0], canvasSize[1] - secondRowTop
+    );
+  }
+  
+  // frame
+  var squareSize = canvasSize[0] * 0.134;
+  var frameLeftTop = drawFrame(canvasContext, [canvasSize[0] / 2, canvasSize[1] / 2], squareSize);
+  
+  // embedding numbers
+  for (var row = 0; row < 3; row++) {
+    var y = frameLeftTop[1] + row * squareSize;
+    for (var column = 0; column < 3; column++) {
+      var x = frameLeftTop[0] + column * squareSize;
+      canvasContext.drawImage(charImages['char' + embeddingNumbers[row * 3 + column]]['yellow'], x, y, squareSize, squareSize);
+    }
+  }
+}
+
+function showEmbeddedCanvas(canvasSize, cipherDevidedByNine) {
+  var canvas = document.getElementById('embedded');
+  var canvasContext = canvas.getContext('2d');
+  setCanvasSize(canvas, canvasContext, canvasSize);
+  
+  // background
+  backgroundGradient(canvasContext, canvasSize, BLUE_TO_GREEN_GRADIENT);
+  
+  var X_PADDING_RATIO_TO_SQUARE = 1;
+  var X_MARGIN_RATIO_TO_SQUARE = 0.5;
+  var Y_PADDING_RATIO_TO_MARGIN = 1.5;
+  
+  var frameCount = cipherDevidedByNine.length;
+  var xFrameCount = Math.ceil(2 * Math.sqrt(frameCount / 3));
+  var yFrameCount = Math.ceil(frameCount / xFrameCount);
+  
+  var squareSize = canvasSize[0]
+    / (X_PADDING_RATIO_TO_SQUARE * 2 + xFrameCount * 3 + X_MARGIN_RATIO_TO_SQUARE * (xFrameCount - 1));
+  var xPadding = squareSize * X_PADDING_RATIO_TO_SQUARE;
+  var xMargin = squareSize * X_MARGIN_RATIO_TO_SQUARE;
+  var yBlank = canvasSize[1] - (squareSize * yFrameCount * 3);
+  var yMargin = yBlank / (Y_PADDING_RATIO_TO_MARGIN * 2 + (yFrameCount - 1));
+  var yPadding = yMargin * Y_PADDING_RATIO_TO_MARGIN;
+  
+  var lastRowOffset = (squareSize * 3 + xMargin) * (xFrameCount * yFrameCount - frameCount) / 2;
+  var leftTops = [];
+  
+  for (var y = 0; y < yFrameCount; y++) {
+    for (var x = 0; x < xFrameCount; x++) {
+      var frameIndex = y * xFrameCount + x;
+      if (!cipherDevidedByNine[frameIndex]) {
+        break;
+      }
+      
+      // frames
+      var frameCenter = [
+        xPadding + squareSize * (3 * x + 1.5) + xMargin * x + (y == yFrameCount - 1 ? lastRowOffset : 0),
+        yPadding + squareSize * (3 * y + 1.5) + yMargin * y
+      ];
+      console.log(frameCenter);
+      var frameLeftTop = drawFrame(canvasContext, frameCenter, squareSize);
+      leftTops.push(frameLeftTop);
+      
+      // embedding numbers
+      for (var numberRow = 0; numberRow < 3; numberRow++) {
+        var numberY = frameLeftTop[1] + numberRow * squareSize;
+        for (var numberColumn = 0; numberColumn < 3; numberColumn++) {
+          var numberX = frameLeftTop[0] + numberColumn * squareSize;
+          canvasContext.drawImage(
+            charImages['char' + cipherDevidedByNine[frameIndex][numberRow * 3 + numberColumn]]['yellow'],
+            numberX, numberY,
+            squareSize, squareSize
+          );
+        }
       }
     }
-  });
-}// enqueueFunctionWaitingImageLoadを使う
+  }
+  
+  return {
+    squareSize: squareSize,
+    leftTops: leftTops
+  };
+}
+
+function showSmallDicesCanvas(canvasSize, cipherDevidedByNine, squareSize, leftTops) {
+  var canvas = document.getElementById('small_dices');
+  var canvasContext = canvas.getContext('2d');
+  setCanvasSize(canvas, canvasContext, canvasSize);
+  
+  // background
+  backgroundGradient(canvasContext, canvasSize, BLUE_TO_GREEN_GRADIENT);
+  
+  var frameCount = cipherDevidedByNine.length;
+  var xFrameCount = Math.ceil(2 * Math.sqrt(frameCount / 3));
+  var yFrameCount = Math.ceil(frameCount / xFrameCount);
+  
+  for (var y = 0; y < yFrameCount; y++) {
+    for (var x = 0; x < xFrameCount; x++) {
+      var frameIndex = y * xFrameCount + x;
+      if (!cipherDevidedByNine[frameIndex]) {
+        break;
+      }
+      var leftTop = leftTops[frameIndex];
+      
+      // dices
+      for (var diceRow = 0; diceRow < 3; diceRow++) {
+        var diceY = leftTop[1] + diceRow * squareSize;
+        for (var diceColumn = 0; diceColumn < 3; diceColumn++) {
+          var diceX = leftTop[0] + diceColumn * squareSize;
+          canvasContext.drawImage(
+            charImages['char' + cipherDevidedByNine[frameIndex][diceRow * 3 + diceColumn]]['dice'],
+            diceX, diceY,
+            squareSize, squareSize
+          );
+        }
+      }
+    }
+  }
+}
+
+function showPatternAnswerCanvas(canvasSize, cipherDevidedByNine, squareSize, leftTops) {
+  var canvas = document.getElementById('pattern_answer_canvas');
+  var canvasContext = canvas.getContext('2d');
+  setCanvasSize(canvas, canvasContext, canvasSize);
+  
+  // background
+  backgroundGradient(canvasContext, canvasSize, BLUE_TO_GREEN_GRADIENT);
+  
+  var frameCount = cipherDevidedByNine.length;
+  var xFrameCount = Math.ceil(2 * Math.sqrt(frameCount / 3));
+  var yFrameCount = Math.ceil(frameCount / xFrameCount);
+  
+  // frames
+  for (var y = 0; y < yFrameCount; y++) {
+    for (var x = 0; x < xFrameCount; x++) {
+      var frameIndex = y * xFrameCount + x;
+      if (!cipherDevidedByNine[frameIndex]) {
+        break;
+      }
+      
+      // highlight
+      canvasContext.fillStyle = "rgb(255, 92, 86)";
+      canvasContext.shadowColor = "rgb(255, 92, 86)";
+      canvasContext.shadowBlur = squareSize / 2;
+      cipherDevidedByNine[frameIndex].forEach(function (element, index) {
+        if (parseInt(element, 10) == 1) {
+          canvasContext.fillRect(
+            leftTops[frameIndex][0] + squareSize * (index % 3),
+            leftTops[frameIndex][1] + squareSize * Math.floor(index / 3),
+            squareSize,
+            squareSize
+          );
+        }
+      });
+      
+      // frames
+      canvasContext.shadowColor = "transparent";
+      drawFrame(
+        canvasContext,
+        [leftTops[frameIndex][0] + squareSize * 1.5, leftTops[frameIndex][1] + squareSize * 1.5],
+        squareSize
+      );
+    }
+  }
+}
+
+function showNumeralAnswerCanvas(canvasSize, diceNumbers, squareSize, leftTops) {
+  var canvas = document.getElementById('numeral_answer_canvas');
+  var canvasContext = canvas.getContext('2d');
+  setCanvasSize(canvas, canvasContext, canvasSize);
+  
+  // background
+  backgroundGradient(canvasContext, canvasSize, BLUE_TO_GREEN_GRADIENT);
+  
+  var frameCount = diceNumbers.length;
+  var xFrameCount = Math.ceil(2 * Math.sqrt(frameCount / 3));
+  var yFrameCount = Math.ceil(frameCount / xFrameCount);
+  
+  // frames
+  for (var y = 0; y < yFrameCount; y++) {
+    for (var x = 0; x < xFrameCount; x++) {
+      var frameIndex = y * xFrameCount + x;
+      if (diceNumbers[frameIndex] == undefined) {
+        break;
+      }
+      
+      var diceImage = diceNumbers[frameIndex] == -1
+        ? invalidDiceImage
+        : (charImages['char' + diceNumbers[frameIndex]]['dice']);
+      canvasContext.drawImage(diceImage, leftTops[frameIndex][0], leftTops[frameIndex][1], squareSize * 3, squareSize * 3);
+    }
+  }
+}
 
 function explainByText(booleansCount) {
   var excludeNineCount = booleansCount;

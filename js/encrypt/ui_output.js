@@ -6,17 +6,20 @@
 
 /* global calculateCipherSize */
 
+/* global setSaveButton */
 /* global setClipboard */
+/* global setDecryptButton */
 
 var cipherCanvasPadding = 1;  // relative to fontSize
 var marginBetweenCipherChar = 0.5;  // relative to fontSize
 
 function showResult(trumps, errors) {
-  // TODO: Type Aならエンターキーでもsubmitできるようにしたい→implicit submission?
   document.getElementById('result').style.display = 'block';
-  showCipherCanvas(trumps);
+  var canvas = showCipherCanvas(trumps);
   showErrors(errors);
+  setSaveButton(canvas);
   setClipboard(trumps);
+  setDecryptButton(trumps);
   smoothScroll.animateScroll(document.getElementById('result'));
 }
 
@@ -76,8 +79,7 @@ function showCipherCanvas(trumps) {
     });
   });
   
-  // save button (doesn't work in some browsers)
-  document.getElementById('link_to_canvas_image').href = canvas.toDataURL('image/png');
+  return canvas;
 }
 
 function calculateCipherCanvasDimen(canvas, cipherSize) {

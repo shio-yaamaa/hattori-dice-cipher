@@ -10,7 +10,7 @@
 
 // submit numeral action
 document.getElementById('submit_numeral').addEventListener('click', function () {
-  var numerals = document.getElementById('numeral_input').value.split('').map(function (element) {
+  var numerals = document.getElementById('numeral_input').value.replace(/\s/g, '').split('').map(function (element) {
     return parseInt(element, 10);
   });
   var booleans = numerals.reduce(function (previousValue, currentValue) {

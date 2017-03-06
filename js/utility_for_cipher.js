@@ -1,4 +1,6 @@
 /* global TRUMP */
+/* global NUMERAL2BOOLEANS */
+
 /* global count */
 
 ////////////////////////////////////////////////
@@ -59,16 +61,31 @@ function removeNine(array) {
 // [2, 1, 3, 1, 2, 4, 6, 1, 1] -> [false, true, false, true, false, false, false, true, true]
 function numbers2booleans(numbers) {
   return numbers.map(function (number) {
-    return number == 1;
+    return parseInt(number, 10) == 1;
   });
 }
 
+// trueの数のみで数字を決める
 function booleans2numeral(booleans) {
   var numeral = [];
   for (var i = 0; i < booleans.length; i += 9) {
     numeral.push(count(booleans.slice(i, i + 9), true));
   }
   return numeral;
+}
+
+// trueの位置も考慮してサイコロを特定する, 無効なら-1
+function booleans2dice(booleans) {
+  var diceNumber = -1;
+  for (var i = 0; i < NUMERAL2BOOLEANS.length; i++) {
+    if (NUMERAL2BOOLEANS[i].reduce(function (previousValue, currentValue, index) {
+      return previousValue && (currentValue == booleans[index]);
+    }, true)) {
+      diceNumber = i;
+      break;
+    }
+  }
+  return diceNumber;
 }
 
 // width and height
