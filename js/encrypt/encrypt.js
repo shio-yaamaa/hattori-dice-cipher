@@ -49,6 +49,7 @@ function encrypt(booleans) {
     if (trumps.length - (AA_J_max + AN_R_max) + 1 <= element
       && (contSum == undefined || (index % 2 == 0 && candidateRoot % 2 == 0))) {
       candidateRoot = index + 1;
+      console.log(index + 1 + "をcandidateRootにします");
       contSum = trumps.length + 1 - element;
     }
   });
@@ -56,6 +57,7 @@ function encrypt(booleans) {
     errors['not_square'] = true;
     contSum = AA_J_max + AN_R_max;
   }
+  console.log("contSum: " + contSum);
   
   // distribute quota of contraction
   if (AA_J_cont.min + AN_R_cont.min > contSum) {
@@ -66,19 +68,33 @@ function encrypt(booleans) {
       AA_J_max,
       AA_J_cont.min + getRandomInt(0, contSum - AA_J_cont.min - AN_R_cont.min + 1)
     );
+    console.log("AA_J_quota: " + AA_J_quota);
   }
   AN_R_quota = contSum - AA_J_quota;
+  console.log("AN_R_quota: " + AN_R_quota);
   if (AN_R_max < AN_R_quota) {
     AA_J_quota += AN_R_quota - AN_R_max;
     AN_R_quota = AN_R_max;
+    console.log("quota訂正");
+    console.log("AA_J_quota: " + AA_J_quota);
+    console.log("AN_R_quota: " + AN_R_quota);
   }
+  
+  console.log("before contractions");
+  console.log(trumps);
   
   // execute contractions
   trumps = AA_J_cont.execute(trumps, pickRandomInts(0, AA_J_max, AA_J_quota));
   trumps = AN_R_cont.execute(trumps, pickRandomInts(0, AN_R_max, AN_R_quota));
   
+  console.log("after contractions");
+  console.log(trumps);
+  
   // execute replacements
   trumps = JN_AR_repl.execute(trumps, count(trumps, TRUMP.J) - AA_J_cont.min, 0.5);
+  
+  console.log("after replacements");
+  console.log(trumps);
   
   // execute inversions
   trumps = A_J_inv.execute(trumps, 0.5);

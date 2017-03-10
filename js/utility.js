@@ -75,6 +75,45 @@ function pickRandomInts(min, max, count) {
   return array.slice(0, count);
 }
 
+// 片方しか使ってないけど大丈夫？
+function gaussianRandom(mean, standardDeviation) {
+  var x = Math.random();
+  var y = Math.random();
+  return Math.sqrt(-2 * Math.log(x)) * Math.cos(2 * Math.PI * y) * standardDeviation + mean;
+}
+
+function distributeAtRandom(resource_count, receiver_count, min, standardDeviation) {
+  if (receiver_count == 1) {
+    return [resource_count];
+  }
+  
+  var mean = resource_count / receiver_count;
+  var result = [];
+  var candidate;
+  
+  while (receiver_count > 1) {
+    // minずつしか配分できないとき
+    if (resource_count == min * receiver_count) {
+      candidate = min;
+    } else {
+      // loop until the candidate meets the requirements
+      do {
+        candidate = Math.round(gaussianRandom(mean, standardDeviation));
+      } while (candidate < min || resource_count - candidate < min * (receiver_count - 1));
+    }
+    result.push(candidate);
+    resource_count -= candidate;
+    receiver_count--;
+  }
+  // push the remaining resource
+  result.push(resource_count);
+  
+  // shuffle
+  result = pickRandomElements(result, result.length);
+  
+  return result;
+}
+
 function getMargin(element) {
   var computedStyle = getComputedStyle(element);
   return [

@@ -28,6 +28,21 @@ header {
     width: 100%;
     align-items: center;
     font-size: 2rem;
+    
+    @media (max-width: $mobile_max_width) {
+      font-size: 1.3rem;
+    }
+    
+    & > img {
+      width: 50px;
+      @media (max-width: $mobile_max_width) {
+        width: 30px;
+      }
+    }
+    
+    & > p {
+      margin-left: 1rem;
+    }
   }
   
   #header_menu {
@@ -35,15 +50,15 @@ header {
     width: 100%;
     font-size: 1.2rem;
     
-    * {
-      margin: 1em 1em 0;
+    & > * {
+      margin: 1rem 1rem 0;
       
       &:after {
         content: "";
         display: block;
         width: 100%;
-        height: 0.2em;
-        margin-top: 0.5em;
+        height: 0.2rem;
+        margin-top: 0.5rem;
         background-color: transparent;
       }
       

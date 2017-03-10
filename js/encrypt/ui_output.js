@@ -26,10 +26,10 @@ function showResult(trumps, errors) {
 function showErrors(errors) {
   var errorExist = false;
   for (var error in errors) {
-    document.getElementById(error).style.display = errors[error] ? 'inline-block' : 'none';
+    document.getElementById(error).style.display = errors[error] ? 'block' : 'none';
     errorExist = errorExist || errors[error];
   }
-  document.getElementById('error').style.display = errorExist ? 'inline-block' : 'none';
+  document.getElementById('error').style.display = errorExist ? 'block' : 'none';
 }
 
 function showCipherCanvas(trumps) {
@@ -40,7 +40,7 @@ function showCipherCanvas(trumps) {
   var devicePxRatio = window.devicePixelRatio;
   
   // canvas size
-  var cipherCanvasDimen = calculateCipherCanvasDimen(canvas, [trumps.length, trumps[0].length]);
+  var cipherCanvasDimen = calculateCipherCanvasDimen(canvas, [trumps[0].length, trumps.length]);
   canvas.width = cipherCanvasDimen['canvasWidth'] * devicePxRatio;
   canvas.height = canvas.width * cipherCanvasDimen['widthToHeight'];
   canvas.style.width = cipherCanvasDimen['canvasWidth'] + 'px';

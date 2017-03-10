@@ -3,6 +3,7 @@
 /* global multipleIndexOf */
 /* global getRandomInt */
 /* global pickRandomElements */
+/* global distributeAtRandom */
 
 function substantiateR(trumps) {
   var RPositions = multipleIndexOf(trumps, TRUMP.R);
@@ -21,10 +22,39 @@ function substantiateR(trumps) {
 
 function substantiateN(trumps) {
   var NPositions = multipleIndexOf(trumps, TRUMP.N);
-  var six2twoPositions = pickRandomElements(NPositions, NPositions.length);
-  for (var i = 0; i < trumps.length; i++) {
-    if (trumps[i] == TRUMP.N) {
-      trumps[i] = String(six2twoPositions.indexOf(i) % (6 - 2 + 1) * -1 + 6);
+  
+  if (NPositions.length < (6 - 2 + 1) * 2) {
+    // Nが少なすぎて2個ずつ未満しか配分できない
+    // 6から順に配分
+    for (var i = 6; i >= 2; i--) {
+      NPositions = multipleIndexOf(trumps, TRUMP.N);
+      
+      // iの個数を決定
+      let iPositionCount = NPositions.length > i - 2 + 1 ? 2 : 1;
+      
+      // ランダムに選ばれた場所のtrumpをiに変える
+      pickRandomElements(NPositions, iPositionCount).forEach(function (element) {
+        trumps[element] = String(i);
+      });
+      
+      // Nが枯渇したらbreak
+      if (NPositions.length - iPositionCount <= 0) {
+        break;
+      }
+    }
+  } else {
+    var distributed = distributeAtRandom(NPositions.length, 6 - 2 + 1, 2, NPositions.length / (6 - 2 + 1) * 0.146);
+    
+    for (var i = 2; i <= 6; i++) {
+      NPositions = multipleIndexOf(trumps, TRUMP.N);
+      
+      // iの個数
+      let iPositionCount = distributed[i - 2];
+      
+      // ランダムに選ばれた場所のtrumpをiに変える
+      pickRandomElements(NPositions, iPositionCount).forEach(function (element) {
+        trumps[element] = String(i);
+      });
     }
   }
   return trumps;

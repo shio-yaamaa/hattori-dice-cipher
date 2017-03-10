@@ -55,9 +55,6 @@
       <div id="result">
         <h1>結果</h1>
         <canvas id="cipher_canvas"></canvas>
-        <!--<div id="cipher_paper">
-          <table id="cipher_table"></table>
-        </div>-->
         
         <div id="error">
           <h2>この暗号には問題があります</h2>
@@ -70,10 +67,15 @@
           Type Aなら一桁ごとになるべく大きい数字を入力する、Type Bなら赤くするマスを増やすことで改善されることがあります。</p>
         </div>
         
-        <!--<button type="button" id="share">この暗号を共有</button>-->
-        <a id="link_to_canvas_image" href="" download="暗号"><button type="button" id="save">この暗号を保存</button></a>
-        <span>※ ブラウザによっては動作しません</span>
-        <button type="button" id="copy">テキストとしてコピー</button>
+        <button type="button" id="share">この暗号をTwitterで共有</button>
+        <div class="button_container">
+          <a id="link_to_canvas_image" href="" download="暗号"><button type="button" id="save">この暗号を保存</button></a>
+          <span>※ ブラウザによっては動作しません</span>
+        </div>
+        <div class="button_container">
+          <button type="button" id="copy">テキストとしてコピー</button>
+          <span id="copy_message">コピーしました</span>
+        </div>
         <button type="button" id="decrypt">この暗号を解読</button>
       </div>
     </article>
