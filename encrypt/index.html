@@ -67,10 +67,10 @@
           Type Aなら一桁ごとになるべく大きい数字を入力する、Type Bなら赤くするマスを増やすことで改善されることがあります。</p>
         </div>
         
-        <button type="button" id="share">この暗号をTwitterで共有</button>
+        <!--<button type="button" id="share">この暗号をTwitterで共有</button>-->
         <div class="button_container">
-          <a id="link_to_canvas_image" href="" download="暗号"><button type="button" id="save">この暗号を保存</button></a>
-          <span>※ ブラウザによっては動作しません</span>
+          <a class="button_link" id="link_to_canvas_image" href="" download="暗号"><button type="button" id="save">この暗号を保存</button></a>
+          <span>※ iPhoneなどのブラウザでは、リンク先の画像を長押しして保存してください<span>
         </div>
         <div class="button_container">
           <button type="button" id="copy">テキストとしてコピー</button>
@@ -81,7 +81,7 @@
     </article>
     
     <footer>
-      <p>何かありましたら、<a href="https://twitter.com/yaa_maa_520">@yaa_maa_520</a>にご連絡ください。<br>解説などは、<a href="/">こちらのブログ記事</a>に書いてあります。</p>
+      <p>何かありましたら、<a class="normal_link" href="https://twitter.com/yaa_maa_520">@yaa_maa_520</a>にご連絡ください。<br>解説などは、<a class="normal_link" href="/">こちらのブログ記事</a>に書いてあります。</p>
     </footer>
     
     <script src="/node_modules/clipboard/dist/clipboard.min.js"></script>
@@ -93,9 +93,9 @@
     <script src="/js/utility_for_cipher.js"></script>
     <script src="/js/utility_for_ui.js"></script>
     
-    <script src="/js/encrypt/contractions.js"></script>
-    <script src="/js/encrypt/replacements.js"></script>
-    <script src="/js/encrypt/inversions.js"></script>
+    <script src="/js/encrypt/contract.js"></script>
+    <script src="/js/encrypt/replace.js"></script>
+    <script src="/js/encrypt/invert.js"></script>
     <script src="/js/encrypt/substantiate.js"></script>
     <script src="/js/encrypt/encrypt.js"></script>
     

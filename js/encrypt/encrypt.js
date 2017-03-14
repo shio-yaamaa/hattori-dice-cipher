@@ -2,7 +2,7 @@
 
 /* global count */
 /* global getRandomInt */
-/* global pickRandomInts */
+/* global pickRandomElements */
 /* global booleans2trumps */
 /* global calculateCipherSize */
 
@@ -27,15 +27,13 @@ function initErrors() {
 }
 
 function encrypt(booleans) {
-  console.log(booleans);
-  
   initErrors();
   
   var trumps = booleans2trumps(booleans);
   
   // count how many times contraction can be executed
-  var AA_J_max = AA_J_cont.count(trumps);
-  var AN_R_max = AN_R_cont.count(trumps);
+  var AA_J_max = AA_J_cont.getExecutablePositions(trumps).length;
+  var AN_R_max = AN_R_cont.getExecutablePositions(trumps).length;
   var AA_J_quota, AN_R_quota;
   var contSum = undefined;
   
@@ -49,7 +47,6 @@ function encrypt(booleans) {
     if (trumps.length - (AA_J_max + AN_R_max) + 1 <= element
       && (contSum == undefined || (index % 2 == 0 && candidateRoot % 2 == 0))) {
       candidateRoot = index + 1;
-      console.log(index + 1 + "をcandidateRootにします");
       contSum = trumps.length + 1 - element;
     }
   });
@@ -57,53 +54,48 @@ function encrypt(booleans) {
     errors['not_square'] = true;
     contSum = AA_J_max + AN_R_max;
   }
-  console.log("contSum: " + contSum);
   
   // distribute quota of contraction
   if (AA_J_cont.min + AN_R_cont.min > contSum) {
-    errors['JQK_deficient'] = true;
+    // if contSum is not enough to cover the minimum contraction count
     AA_J_quota = Math.round(contSum * AA_J_cont.min / (AA_J_cont.min + AN_R_cont.min));
+    AN_R_quota = contSum - AA_J_quota;
   } else {
-    AA_J_quota = Math.min(
-      AA_J_max,
-      AA_J_cont.min + getRandomInt(0, contSum - AA_J_cont.min - AN_R_cont.min + 1)
-    );
-    console.log("AA_J_quota: " + AA_J_quota);
+    // ratio
+    var AA_J_range = [Math.ceil(contSum / 5), Math.floor(contSum / 3)];
+    AA_J_quota = getRandomInt(AA_J_range[0], AA_J_range[1] + 1);
+    AN_R_quota = contSum - AA_J_quota;
+    
+    // min
+    var toAA_J = Math.max(AA_J_cont.min - AA_J_quota, 0);
+    AA_J_quota += toAA_J; AN_R_quota -= toAA_J;
+    var toAN_R = Math.max(AN_R_cont.min - AN_R_quota, 0);
+    AA_J_quota -= toAN_R; AN_R_quota += toAN_R;
+    
+    // max
+    toAN_R = Math.max(AA_J_quota - AA_J_max, 0);
+    AA_J_quota -= toAN_R; AN_R_quota += toAN_R;
+    toAA_J = Math.max(AN_R_quota - AN_R_max, 0);
+    AA_J_quota += toAA_J; AN_R_quota -= toAA_J;
   }
-  AN_R_quota = contSum - AA_J_quota;
-  console.log("AN_R_quota: " + AN_R_quota);
-  if (AN_R_max < AN_R_quota) {
-    AA_J_quota += AN_R_quota - AN_R_max;
-    AN_R_quota = AN_R_max;
-    console.log("quota訂正");
-    console.log("AA_J_quota: " + AA_J_quota);
-    console.log("AN_R_quota: " + AN_R_quota);
-  }
-  
-  console.log("before contractions");
-  console.log(trumps);
   
   // execute contractions
-  trumps = AA_J_cont.execute(trumps, pickRandomInts(0, AA_J_max, AA_J_quota));
-  trumps = AN_R_cont.execute(trumps, pickRandomInts(0, AN_R_max, AN_R_quota));
-  
-  console.log("after contractions");
-  console.log(trumps);
+  var AA_J_contractiblePositions = AA_J_cont.getExecutablePositions(trumps);
+  trumps = AA_J_cont.execute(trumps, pickRandomElements(AA_J_contractiblePositions, AA_J_quota));
+  var AN_R_contractiblePositions = AN_R_cont.getExecutablePositions(trumps);
+  trumps = AN_R_cont.execute(trumps, pickRandomElements(AN_R_contractiblePositions, AN_R_quota));
   
   // execute replacements
-  trumps = JN_AR_repl.execute(trumps, count(trumps, TRUMP.J) - AA_J_cont.min, 0.5);
-  
-  console.log("after replacements");
-  console.log(trumps);
+  trumps = JN_AR_repl.execute(trumps);
   
   // execute inversions
   trumps = A_J_inv.execute(trumps, 0.5);
   
-  // Jのミニマム数は、contに持たせるべきではない！
-  
   // substantiate R and N
   trumps = substantiateR(trumps);
   trumps = substantiateN(trumps);
+  
+  errors['JQK_deficient'] = trumps.indexOf(TRUMP.J) == -1 || trumps.indexOf(TRUMP.Q) == -1 || trumps.indexOf(TRUMP.K) == -1;
   
   var size = calculateCipherSize(trumps.length + 1);
   
@@ -122,7 +114,6 @@ function encrypt(booleans) {
     }
     twoDTrumps[twoDTrumps.length - 1].push(element);
   });
-  console.log(twoDTrumps);
   
   return twoDTrumps;
 }

@@ -11,3 +11,18 @@
 .button_container > * {
   display: inline-block;
 }
+
+#copy_message {
+  opacity: 0;
+}
+
+.copy_message_show {
+  animation: copy_message_show_animation 1s;
+}
+
+@keyframes copy_message_show_animation {
+  0% {opacity: 0}
+  20% {opacity: 1}
+  80% {opacity: 1}
+  100% {opacity: 0}
+}

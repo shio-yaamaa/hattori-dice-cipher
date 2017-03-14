@@ -16,7 +16,6 @@ document.getElementById('submit_numeral').addEventListener('click', function () 
   var booleans = numerals.reduce(function (previousValue, currentValue) {
     return previousValue.concat(NUMERAL2BOOLEANS[currentValue]);
   }, []);
-  console.log(booleans);
   var trumps = encrypt(booleans);
   showResult(trumps, errors);
 });

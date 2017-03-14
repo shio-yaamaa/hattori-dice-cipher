@@ -478,7 +478,7 @@ function showEmbeddedCanvas(canvasSize, cipherDevidedByNine) {
   var Y_PADDING_RATIO_TO_MARGIN = 1.5;
   
   var frameCount = cipherDevidedByNine.length;
-  var xFrameCount = Math.ceil(2 * Math.sqrt(frameCount / 3));
+  var xFrameCount = frameCount == 3 ? 3 : Math.ceil(2 * Math.sqrt(frameCount / 3)); // 3桁の場合は2×2ではなく3×1にする
   var yFrameCount = Math.ceil(frameCount / xFrameCount);
   
   var squareSize = canvasSize[0]

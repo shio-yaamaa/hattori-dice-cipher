@@ -7,15 +7,9 @@
 
 function substantiateR(trumps) {
   var RPositions = multipleIndexOf(trumps, TRUMP.R);
-  var QKPositions = pickRandomElements(RPositions, 2);
-  for (var i = 0; i < trumps.length; i++) {
-    if (trumps[i] == TRUMP.R) {
-      if (QKPositions.indexOf(i) != -1) {
-        trumps[i] = QKPositions.indexOf(i) == 0 ? TRUMP.Q : TRUMP.K;
-      } else {
-        trumps[i] = getRandomInt(0, 2) == 0 ? TRUMP.Q : TRUMP.K;
-      }
-    }
+  var QKPositions = pickRandomElements(RPositions, RPositions.length);
+  for (var i = 0; i < QKPositions.length; i++) {
+    trumps[QKPositions[i]] = i % 2 == 0 ? TRUMP.Q : TRUMP.K;
   }
   return trumps;
 }
@@ -30,7 +24,7 @@ function substantiateN(trumps) {
       NPositions = multipleIndexOf(trumps, TRUMP.N);
       
       // iの個数を決定
-      let iPositionCount = NPositions.length > i - 2 + 1 ? 2 : 1;
+      var iPositionCount = NPositions.length > i - 2 + 1 ? 2 : 1;
       
       // ランダムに選ばれた場所のtrumpをiに変える
       pickRandomElements(NPositions, iPositionCount).forEach(function (element) {
@@ -49,7 +43,7 @@ function substantiateN(trumps) {
       NPositions = multipleIndexOf(trumps, TRUMP.N);
       
       // iの個数
-      let iPositionCount = distributed[i - 2];
+      var iPositionCount = distributed[i - 2];
       
       // ランダムに選ばれた場所のtrumpをiに変える
       pickRandomElements(NPositions, iPositionCount).forEach(function (element) {
